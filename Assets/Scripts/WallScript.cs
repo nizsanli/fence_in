@@ -3,7 +3,7 @@ using System.Collections;
 
 public class WallScript : MonoBehaviour {
 
-	public bool particlesEnabled;
+	public int numBurstParticles = 2;
 	private bool electric;
 
 	public void setElectric(bool status)
@@ -18,8 +18,8 @@ public class WallScript : MonoBehaviour {
 
 	public void Start()
 	{
-		particlesEnabled = false;
 		particleSystem.enableEmission = false;
+		particleSystem.renderer.sortingLayerName = "Foreground";
 	}
 
 	public void Update()
