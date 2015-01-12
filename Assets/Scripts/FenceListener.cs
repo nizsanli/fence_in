@@ -205,6 +205,10 @@ public class FenceListener : MonoBehaviour {
 			{
 				currWallPart.localScale = new Vector3(1f, 1f, 1f);
 
+				currWallPart.particleSystem.enableEmission = true;
+				currWallPart.particleSystem.Emit(currWallPart.GetComponent<WallScript>().numBurstParticles);
+				currWallPart.particleSystem.enableEmission = false;
+
 				BoxCollider2D wallCollider = (BoxCollider2D) Instantiate(wallColliderPrefab, currWallPart.position, Quaternion.identity);
 				wallCollider.transform.parent = currWallPart;
 
@@ -238,6 +242,10 @@ public class FenceListener : MonoBehaviour {
 					{
 						wall.setElectric(false);
 						wall.gameObject.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 1f);
+						
+						wall.particleSystem.enableEmission = true;
+						wall.particleSystem.Emit(currWallPart.GetComponent<WallScript>().numBurstParticles);
+						wall.particleSystem.enableEmission = false;
 					}
 
 					electricWalls.Clear();
