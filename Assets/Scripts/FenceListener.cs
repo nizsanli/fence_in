@@ -14,10 +14,15 @@ public class FenceListener : MonoBehaviour {
 	public BoxCollider2D wallColliderPrefab;
 	public MovingObj movingObj;
 
+	public int areaToWin = 17;
+	public float fenceGrowRate = 0.5f;
+	public Color electricWallCol = new Color(255f/255f, 88f/255f, 88f/255f, 1f);
+	public Color regularWallCol = Color.white;
+	public float cellSize = 1f;
+
 	public Text scoreText;
 	public CanvasRenderer winPanel;
 
-	private float cellSize;
 	private float gridLength;
 
 	private bool build;
@@ -42,14 +47,12 @@ public class FenceListener : MonoBehaviour {
 	private int area;
 
 	private float timeDead;
-	private Color electricWallCol;
 
 	// Use this for initialization
 	void Start () {
 		arrow.GetComponent<SpriteRenderer>().enabled = false;
 		mouse.GetComponent<SpriteRenderer>().enabled = false;
 
-		electricWallCol = new Color(255f/255f, 88f/255f, 88f/255f, 1f);
 		electricWalls = new List<WallScript>((int)gridLength);
 
 		build = false;
@@ -63,7 +66,6 @@ public class FenceListener : MonoBehaviour {
 		};
 
 		timeDead = 0f;
-		cellSize = 1f;
 		minDist = 1f;
 
 		Camera.main.orthographicSize = 15f;
@@ -198,16 +200,13 @@ public class FenceListener : MonoBehaviour {
 			if ((1f - currWallPart.localScale.x) > 0.001f)
 			{
 				float speed = 90f;
-				float adder = (1f - currWallPart.localScale.x) * 0.5f * Time.deltaTime * speed;
+				float adder = (1f - currWallPart.localScale.x) * fenceGrowRate * Time.deltaTime * speed;
 				currWallPart.localScale = new Vector3(currWallPart.localScale.x + adder, currWallPart.localScale.y + adder, 1f);
 			}
 			else
 			{
 				currWallPart.localScale = new Vector3(1f, 1f, 1f);
-
-				currWallPart.particleSystem.enableEmission = true;
-				currWallPart.particleSystem.Emit(currWallPart.GetComponent<WallScript>().numBurstParticles);
-				currWallPart.particleSystem.enableEmission = false;
+				currWallPart.GetComponent<WallScript>().emitParticles();
 
 				BoxCollider2D wallCollider = (BoxCollider2D) Instantiate(wallColliderPrefab, currWallPart.position, Quaternion.identity);
 				wallCollider.transform.parent = currWallPart;
@@ -241,17 +240,15 @@ public class FenceListener : MonoBehaviour {
 					foreach (WallScript wall in electricWalls)
 					{
 						wall.setElectric(false);
-						wall.gameObject.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 1f);
+						wall.gameObject.GetComponent<SpriteRenderer>().color = regularWallCol;
 						
-						wall.particleSystem.enableEmission = true;
-						wall.particleSystem.Emit(currWallPart.GetComponent<WallScript>().numBurstParticles);
-						wall.particleSystem.enableEmission = false;
+						wall.GetComponent<WallScript>().emitParticles();
 					}
 
 					electricWalls.Clear();
 
 					area = logArea();
-					if (area < 17)
+					if (area < areaToWin)
 					{
 						win = true;
 					}
