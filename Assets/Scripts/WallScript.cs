@@ -8,15 +8,15 @@ public class WallScript : MonoBehaviour {
 	
 	public void Start()
 	{
-		particleSystem.enableEmission = false;
-		particleSystem.renderer.sortingLayerName = "Foreground";
+		GetComponent<ParticleSystem>().enableEmission = false;
+		GetComponent<ParticleSystem>().GetComponent<Renderer>().sortingLayerName = "Foreground";
 	}
 
 	public void emitParticles()
 	{
-		particleSystem.enableEmission = true;
-		particleSystem.Emit(numBurstParticles);
-		particleSystem.enableEmission = false;
+		GetComponent<ParticleSystem>().enableEmission = true;
+		GetComponent<ParticleSystem>().Emit(numBurstParticles);
+		GetComponent<ParticleSystem>().enableEmission = false;
 	}
 
 	public void setElectric(bool status)
